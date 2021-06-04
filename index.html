@@ -7,11 +7,25 @@
 		<link type="text/css" rel="stylesheet" href="main.css">
 	</head>
 	<body>
-
-		<div id="info">
-			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> ar - hit test<br/>(Chrome Android 81+)
-		</div>
-
+		
+		<div id="mySidenav" class="sidenav">
+			<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+			<a href="#">Chair</a>
+			<a href="#">Table</a>
+			<a href="#">TV</a>
+			<a href="#">Fridge</a>
+		  </div>
+		  <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; open</span>
+		  
+		  <script>
+		  function openNav() {
+			document.getElementById("mySidenav").style.width = "250px";
+		  }
+		  
+		  function closeNav() {
+			document.getElementById("mySidenav").style.width = "0";
+		  }
+		  </script>		 
 		<script type="module">
 
 			import * as THREE from './build/three.module.js';
