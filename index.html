@@ -5,17 +5,21 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 		<link type="text/css" rel="stylesheet" href="main.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	</head>
 	<body>
 		
 		<div id="mySidenav" class="sidenav">
 			<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-			<a href="#">Chair</a>
-			<a href="#">Table</a>
-			<a href="#">TV</a>
-			<a href="#">Fridge</a>
+			<a class="ar-object" id="1" href="#">Chair</a>
+			<a class="ar-object" id="2" href="#">Table</a>
+			<a class="ar-object" id="3" href="#">TV</a>
+			<a class="ar-object" id="4" href="#">Fridge</a>
 		  </div>
-		  <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; open</span>
+
+		  <div id="container" styles="position: fixed; background-color: aqua;"></div>
+
+		  <span style="font-size:30px;cursor:pointer; position: absolute;" onclick="openNav()">&#9776; open</span>
 		  
 		  <script>
 		  function openNav() {
@@ -30,18 +34,45 @@
 
 			import * as THREE from './build/three.module.js';
 			import { ARButton } from './jsm/webxr/ARButton.js';
+			import {OrbitControls} from './jsm/controls/OrbitControls.js';
+			import {GLTFLoader} from './jsm/loaders/GLTFLoader.js';
+			import {RGBELoader} from './jsm/loaders/RGBELoader.js';
+			import {RoughnessMimapper} from './jsm/utils/RoughnessMipmapper.js';
+
 
 			let container;
 			let camera, scene, renderer;
 			let controller;
 
-			let reticle;
+			let reticle, pmremGenerator, current_object;
 
 			let hitTestSource = null;
 			let hitTestSourceRequested = false;
 
 			init();
 			animate();
+
+			function loadModel(model) {
+					new RGBELoader()
+						.setDataType(THREE.UnsignedByteType)
+						.setPath('textures/')
+						.load('photo_studios_01_1k.hdr', function(texture){
+								var envmap = pmreGenerator.fromEquirectangular(texture).texture;
+
+								scene.environment = envmap;
+								texture.dispose();
+								pmremGenerator.dispose();
+								render();
+
+								var loader = new GLTFLoader().setPath('3d/');
+								loader.load(model + ".glb", function(glb){
+										current_object = glb.scene;
+										scene.add(current_object);
+
+										render();
+								})
+						});
+			}
 
 			function init() {
 
